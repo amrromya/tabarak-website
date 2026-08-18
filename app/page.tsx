@@ -277,7 +277,7 @@ function Trial() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="https://github.com/amrromya/TABARAK/releases/latest"
+              href="https://github.com/amrromya/TABARAK/releases/download/v0.2.3/tabarak_0.2.3_x64-setup.exe"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-white text-[#0f8a5f] px-10 py-4 rounded-xl font-extrabold text-lg hover:bg-emerald-50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 inline-flex items-center gap-2"
@@ -307,7 +307,7 @@ function Contact() {
         </p>
         <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
           <a
-            href="https://wa.me/201000000000"
+            href="https://wa.me/201277772930"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-[#25D366] text-white p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
@@ -317,12 +317,12 @@ function Contact() {
             <p className="text-white/80 text-sm">تواصل معنا مباشرة</p>
           </a>
           <a
-            href="mailto:info@tabarak.app"
+            href="mailto:amrromya416@gmail.com"
             className="bg-[#0f8a5f] text-white p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
           >
             <span className="text-4xl block mb-3">📧</span>
             <h4 className="font-bold text-lg mb-1">البريد الإلكتروني</h4>
-            <p className="text-white/80 text-sm">info@tabarak.app</p>
+            <p className="text-white/80 text-sm">amrromya416@gmail.com</p>
           </a>
         </div>
       </div>
