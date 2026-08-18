@@ -43,7 +43,7 @@ function Hero() {
         <div className="mt-16 mx-auto max-w-3xl bg-white/10 backdrop-blur-sm rounded-2xl p-2 border border-white/20 shadow-2xl">
           <div className="bg-[#1c352e] rounded-xl overflow-hidden aspect-[16/9] flex items-center justify-center">
             <img
-              src="/app.png"
+              src="/watermark.png"
               alt="تبارك"
               className="w-32 h-32 md:w-48 md:h-48 object-contain opacity-80"
             />
@@ -434,7 +434,7 @@ function Footer() {
     <footer className="bg-[#12231f] text-white py-10 px-4">
       <div className="max-w-6xl mx-auto text-center">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <img src="/app.png" alt="تبارك" className="w-10 h-10 rounded-lg" />
+          <img src="/watermark.png" alt="تبارك" className="w-10 h-10 rounded-lg" />
           <span className="text-xl font-extrabold">تبارك</span>
         </div>
         <p className="text-white/50 text-sm mb-6">
@@ -457,7 +457,7 @@ function Navbar() {
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
         <div className="flex items-center gap-3">
           <img
-            src="/app.png"
+            src="/watermark.png"
             alt="تبارك"
             className="w-9 h-9 rounded-lg"
           />
