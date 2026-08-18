@@ -164,13 +164,16 @@ function Features() {
 
 function Screenshots() {
   const screenshots = [
-    { title: "لوحة التحكم", desc: "نظرة عامة على المبيعات والمشتريات والإيرادات", color: "from-emerald-500 to-emerald-700", icon: "📊" },
-    { title: "نقطة البيع", desc: "إدخال فواتير البيع بسرعة وسهولة", color: "from-green-500 to-green-700", icon: "🛒" },
-    { title: "إدارة المخزون", desc: "تتبع الأصناف والكميات والمستودعات", color: "from-blue-500 to-blue-700", icon: "📦" },
-    { title: "كشف حساب العملاء", desc: "חשבונות تفصيلية وإجمالية للعملاء", color: "from-violet-500 to-violet-700", icon: "🤝" },
-    { title: "نظام الصيانة", desc: "إدارة طلبات الصيانة والفنين", color: "from-amber-500 to-amber-700", icon: "🔧" },
-    { title: "التقارير", desc: "تقارير مبيعات ومشتريات ومالية مفصلة", color: "from-rose-500 to-rose-700", icon: "📈" },
+    { src: "/screenshots/dashboard.png", title: "لوحة التحكم" },
+    { src: "/screenshots/pos.png", title: "فاتورة مبيعات" },
+    { src: "/screenshots/inventory.png", title: "المخزون والمنتجات" },
+    { src: "/screenshots/customers.png", title: "العملاء والديون" },
+    { src: "/screenshots/reports.png", title: "التقارير" },
+    { src: "/screenshots/maintenance.png", title: "الصيانة" },
+    { src: "/screenshots/login.png", title: "شاشة الدخول" },
   ];
+
+  const [activeIdx, setActiveIdx] = useState(0);
 
   return (
     <section className="py-20 px-4 bg-[#f4f6fa]">
@@ -184,64 +187,73 @@ function Screenshots() {
           </p>
         </div>
 
-        {/* Laptop Mockup */}
-        <div className="max-w-4xl mx-auto mb-16">
+        {/* Main Screenshot in Laptop Mockup */}
+        <div className="max-w-4xl mx-auto mb-8">
           <div className="bg-[#1a1a2e] rounded-t-2xl p-3 flex items-center gap-2">
             <div className="flex gap-1.5">
               <div className="w-3 h-3 rounded-full bg-red-400" />
               <div className="w-3 h-3 rounded-full bg-yellow-400" />
               <div className="w-3 h-3 rounded-full bg-green-400" />
             </div>
-            <div className="flex-1 bg-[#2d2d44] rounded-lg mx-4 px-4 py-1.5 text-xs text-white/50 text-center">
-              تبارك — نظام الحسابات المتكامل
+            <div className="flex-1 bg-[#2d2d44] rounded-lg mx-4 px-4 py-1.5 text-xs text-white/50 text-center truncate">
+              {screenshots[activeIdx].title} — تبارك
             </div>
           </div>
-          <div className="bg-gradient-to-br from-[#0f8a5f] to-[#12231f] rounded-b-2xl shadow-2xl overflow-hidden border-4 border-[#1a1a2e] border-t-0">
-            <div className="aspect-video flex items-center justify-center relative">
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl" />
-                <div className="absolute bottom-10 left-10 w-60 h-60 bg-emerald-300 rounded-full blur-3xl" />
-              </div>
+          <div className="bg-[#0a0a1a] rounded-b-2xl shadow-2xl overflow-hidden border-4 border-[#1a1a2e] border-t-0">
+            <div className="relative bg-white">
               <img
-                src="/app.png"
-                alt="تبارك"
-                className="w-40 h-40 md:w-56 md:h-56 object-contain relative z-10"
+                src={screenshots[activeIdx].src}
+                alt={screenshots[activeIdx].title}
+                className="w-full object-contain"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = "none";
+                  target.parentElement!.classList.add("flex", "items-center", "justify-center", "aspect-video");
+                  const placeholder = document.createElement("div");
+                  placeholder.className = "text-center text-gray-400 p-8";
+                  placeholder.innerHTML = '<div className="text-6xl mb-4">📸</div><p className="text-lg font-bold">صورة: ' + screenshots[activeIdx].title + '</p><p className="text-sm mt-2">الصورة غير متوفرة بعد</p>';
+                  target.parentElement!.appendChild(placeholder);
+                }}
               />
-              <div className="absolute bottom-6 left-0 right-0 text-center z-10">
-                <span className="bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-bold border border-white/20">
-                  نظام الحسابات المتكامل — الإصدار الأخير
-                </span>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Feature Cards */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Thumbnails */}
+        <div className="flex gap-3 overflow-x-auto pb-4 justify-center flex-wrap">
           {screenshots.map((s, i) => (
-            <div
+            <button
               key={i}
-              className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-[#e5e7eb]"
+              onClick={() => setActiveIdx(i)}
+              className={`flex-shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-200 ${
+                activeIdx === i
+                  ? "border-[#0f8a5f] shadow-lg scale-105"
+                  : "border-transparent opacity-60 hover:opacity-100"
+              }`}
             >
-              <div className={`bg-gradient-to-br ${s.color} p-8 flex items-center justify-center aspect-[4/3]`}>
-                <div className="text-center text-white">
-                  <span className="text-5xl block mb-3">{s.icon}</span>
-                  <div className="bg-white/15 backdrop-blur-sm rounded-xl px-6 py-3 border border-white/20">
-                    <img
-                      src="/app.png"
-                      alt={s.title}
-                      className="w-20 h-20 object-contain mx-auto opacity-90"
-                    />
-                  </div>
-                </div>
+              <div className="w-24 h-16 bg-white flex items-center justify-center overflow-hidden">
+                <img
+                  src={s.src}
+                  alt={s.title}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = "none";
+                    const parent = target.parentElement!;
+                    parent.classList.add("flex", "items-center", "justify-center");
+                    const span = document.createElement("span");
+                    span.className = "text-xs text-gray-400 font-bold text-center px-1";
+                    span.textContent = s.title;
+                    parent.appendChild(span);
+                  }}
+                />
               </div>
-              <div className="p-5">
-                <h4 className="font-extrabold text-[#12231f] text-lg mb-1">
-                  {s.title}
-                </h4>
-                <p className="text-[#6b7280] text-sm">{s.desc}</p>
+              <div className={`text-center py-1.5 text-xs font-bold ${
+                activeIdx === i ? "bg-[#0f8a5f] text-white" : "bg-gray-100 text-gray-600"
+              }`}>
+                {s.title}
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
