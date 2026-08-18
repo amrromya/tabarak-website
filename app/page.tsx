@@ -162,6 +162,93 @@ function Features() {
   );
 }
 
+function Screenshots() {
+  const screenshots = [
+    { title: "لوحة التحكم", desc: "نظرة عامة على المبيعات والمشتريات والإيرادات", color: "from-emerald-500 to-emerald-700", icon: "📊" },
+    { title: "نقطة البيع", desc: "إدخال فواتير البيع بسرعة وسهولة", color: "from-green-500 to-green-700", icon: "🛒" },
+    { title: "إدارة المخزون", desc: "تتبع الأصناف والكميات والمستودعات", color: "from-blue-500 to-blue-700", icon: "📦" },
+    { title: "كشف حساب العملاء", desc: "חשבונות تفصيلية وإجمالية للعملاء", color: "from-violet-500 to-violet-700", icon: "🤝" },
+    { title: "نظام الصيانة", desc: "إدارة طلبات الصيانة والفنين", color: "from-amber-500 to-amber-700", icon: "🔧" },
+    { title: "التقارير", desc: "تقارير مبيعات ومشتريات ومالية مفصلة", color: "from-rose-500 to-rose-700", icon: "📈" },
+  ];
+
+  return (
+    <section className="py-20 px-4 bg-[#f4f6fa]">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-[#12231f] mb-4">
+            شوف البرنامج
+          </h2>
+          <p className="text-[#6b7280] text-lg max-w-2xl mx-auto">
+            واجهة عربية سهلة وبسيطة — مصممة لتسهيل العمل اليومي
+          </p>
+        </div>
+
+        {/* Laptop Mockup */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <div className="bg-[#1a1a2e] rounded-t-2xl p-3 flex items-center gap-2">
+            <div className="flex gap-1.5">
+              <div className="w-3 h-3 rounded-full bg-red-400" />
+              <div className="w-3 h-3 rounded-full bg-yellow-400" />
+              <div className="w-3 h-3 rounded-full bg-green-400" />
+            </div>
+            <div className="flex-1 bg-[#2d2d44] rounded-lg mx-4 px-4 py-1.5 text-xs text-white/50 text-center">
+              تبارك — نظام الحسابات المتكامل
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-[#0f8a5f] to-[#12231f] rounded-b-2xl shadow-2xl overflow-hidden border-4 border-[#1a1a2e] border-t-0">
+            <div className="aspect-video flex items-center justify-center relative">
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute top-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl" />
+                <div className="absolute bottom-10 left-10 w-60 h-60 bg-emerald-300 rounded-full blur-3xl" />
+              </div>
+              <img
+                src="/app.png"
+                alt="تبارك"
+                className="w-40 h-40 md:w-56 md:h-56 object-contain relative z-10"
+              />
+              <div className="absolute bottom-6 left-0 right-0 text-center z-10">
+                <span className="bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-bold border border-white/20">
+                  نظام الحسابات المتكامل — الإصدار الأخير
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Feature Cards */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {screenshots.map((s, i) => (
+            <div
+              key={i}
+              className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-[#e5e7eb]"
+            >
+              <div className={`bg-gradient-to-br ${s.color} p-8 flex items-center justify-center aspect-[4/3]`}>
+                <div className="text-center text-white">
+                  <span className="text-5xl block mb-3">{s.icon}</span>
+                  <div className="bg-white/15 backdrop-blur-sm rounded-xl px-6 py-3 border border-white/20">
+                    <img
+                      src="/app.png"
+                      alt={s.title}
+                      className="w-20 h-20 object-contain mx-auto opacity-90"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="p-5">
+                <h4 className="font-extrabold text-[#12231f] text-lg mb-1">
+                  {s.title}
+                </h4>
+                <p className="text-[#6b7280] text-sm">{s.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Pricing() {
   const plans = [
     {
@@ -317,7 +404,7 @@ function Contact() {
             <p className="text-white/80 text-sm">تواصل معنا مباشرة</p>
           </a>
           <a
-            href="mailto:amrromya416@gmail.com"
+            href="https://mail.google.com/mail/?view=fs&to=amrromya416@gmail.com&su=استفسار%20عن%20برنامج%20تبارك"
             className="bg-[#0f8a5f] text-white p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
           >
             <span className="text-4xl block mb-3">📧</span>
@@ -417,6 +504,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Features />
+      <Screenshots />
       <Pricing />
       <Trial />
       <Contact />
