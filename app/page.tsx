@@ -45,7 +45,7 @@ function Hero() {
             <img
               src="/watermark.png"
               alt="تبارك"
-              className="w-32 h-32 md:w-48 md:h-48 object-contain opacity-80"
+              className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain opacity-80"
             />
           </div>
         </div>
