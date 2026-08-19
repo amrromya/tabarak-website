@@ -457,7 +457,7 @@ function Navbar() {
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
         <div className="flex items-center gap-3">
           <img
-            src="/watermark.png"
+            src="/app.png"
             alt="تبارك"
             className="w-9 h-9 rounded-lg"
           />

@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "تبارك - نظام الحسابات المتكامل",
   description:
     "نظام حسابات متكامل للمحلات والشركات - إدارة المبيعات والمشتريات والمخزون والعملاء والمحاسبة والصيانة",
-  icons: { icon: "/favicon.png" },
+  icons: { icon: "/app.png" },
 };
 
 export default function RootLayout({
