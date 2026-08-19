@@ -43,7 +43,7 @@ function Hero() {
         <div className="mt-16 mx-auto max-w-3xl bg-white/10 backdrop-blur-sm rounded-2xl p-2 border border-white/20 shadow-2xl">
           <div className="bg-[#1c352e] rounded-xl overflow-hidden aspect-[16/9] flex items-center justify-center">
             <img
-            src="/app.png"
+            src="/watermark.png"
               alt="تبارك"
               className="w-full h-full object-cover"
             />
