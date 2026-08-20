@@ -13,7 +13,7 @@ function Hero() {
         <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2 mb-8 border border-white/20">
           <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
           <span className="text-white/90 text-sm font-semibold">
-            الإصدار الأخير v0.2.3
+            الإصدار الأخير v0.2.7
           </span>
         </div>
         <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
@@ -376,7 +376,7 @@ function Trial() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="https://github.com/amrromya/TABARAK/releases/download/v0.2.3/tabarak_0.2.3_x64-setup.exe"
+              href="https://github.com/amrromya/TABARAK/releases/download/v0.2.7/tabarak_0.2.7_x64-setup.exe"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-white text-[#0f8a5f] px-10 py-4 rounded-xl font-extrabold text-lg hover:bg-emerald-50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 inline-flex items-center gap-2"
