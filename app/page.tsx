@@ -359,6 +359,28 @@ function Pricing() {
 }
 
 function Trial() {
+  const [showForm, setShowForm] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [form, setForm] = useState({ name: "", activity: "", email: "", address: "" });
+
+  const handleSubmit = async () => {
+    if (!form.name.trim() || !form.email.trim()) return;
+    setSending(true);
+    try {
+      const res = await fetch("/api/telegram", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setSent(true);
+        window.open("https://github.com/amrromya/TABARAK/releases/download/v0.2.7/tabarak_0.2.7_x64-setup.exe", "_blank");
+      }
+    } catch {}
+    setSending(false);
+  };
+
   return (
     <section
       id="trial"
@@ -375,21 +397,71 @@ function Trial() {
             متاحة في النسخة التجريبية.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://github.com/amrromya/TABARAK/releases/download/v0.2.7/tabarak_0.2.7_x64-setup.exe"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white text-[#0f8a5f] px-10 py-4 rounded-xl font-extrabold text-lg hover:bg-emerald-50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 inline-flex items-center gap-2"
+            <button
+              onClick={() => { setShowForm(true); setSent(false); setForm({ name: "", activity: "", email: "", address: "" }); }}
+              className="bg-white text-[#0f8a5f] px-10 py-4 rounded-xl font-extrabold text-lg hover:bg-emerald-50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 inline-flex items-center gap-2 cursor-pointer"
             >
               <span>⬇</span>
               تحميل النسخة التجريبية
-            </a>
+            </button>
           </div>
           <p className="text-white/50 text-sm mt-6">
             يعمل على Windows 10/11 — حجم التحميل 25 MB تقريباً
           </p>
         </div>
       </div>
+
+      {showForm && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowForm(false)}>
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            {sent ? (
+              <div className="text-center py-6">
+                <span className="text-5xl block mb-4">✅</span>
+                <h3 className="text-xl font-extrabold text-[#12231f] mb-2">تم الإرسال بنجاح!</h3>
+                <p className="text-[#6b7280] mb-6">جاري تحميل البرنامج...</p>
+                <button onClick={() => setShowForm(false)} className="bg-[#0f8a5f] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#0b6e4b] transition-colors">إغلاق</button>
+              </div>
+            ) : (
+              <>
+                <h3 className="text-xl font-extrabold text-[#12231f] mb-1">تحميل النسخة التجريبية</h3>
+                <p className="text-[#6b7280] text-sm mb-6">املأ البياناتournée للحصول على رابط التحميل</p>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-bold text-[#374151] mb-1">الاسم <span className="text-red-500">*</span></label>
+                    <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm" placeholder="الاسم الكامل" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#374151] mb-1">نوع النشاط</label>
+                    <select value={form.activity} onChange={(e) => setForm({ ...form, activity: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm bg-white">
+                      <option value="">اختر نوع النشاط</option>
+                      <option value="محل بيع">محل بيع</option>
+                      <option value="ورشة صيانة">ورشة صيانة</option>
+                      <option value="مطعم">مطعم</option>
+                      <option value="صيدلية">صيدلية</option>
+                      <option value="شركة">شركة</option>
+                      <option value="أخرى">أخرى</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#374151] mb-1">البريد الإلكتروني <span className="text-red-500">*</span></label>
+                    <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm" placeholder="example@email.com" dir="ltr" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-[#374151] mb-1">العنوان</label>
+                    <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm" placeholder="المدينة / المنطقة" />
+                  </div>
+                </div>
+                <div className="flex gap-3 mt-6">
+                  <button onClick={handleSubmit} disabled={sending || !form.name.trim() || !form.email.trim()} className="flex-1 bg-[#0f8a5f] text-white py-3 rounded-xl font-bold hover:bg-[#0b6e4b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                    {sending ? "جاري الإرسال..." : "تحميل الآن"}
+                  </button>
+                  <button onClick={() => setShowForm(false)} className="px-6 py-3 rounded-xl font-bold text-[#6b7280] border-2 border-gray-200 hover:bg-gray-50 transition-colors">إلغاء</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -416,12 +488,14 @@ function Contact() {
             <p className="text-white/80 text-sm">تواصل معنا مباشرة</p>
           </a>
           <a
-            href="https://mail.google.com/mail/?view=fs&to=amrromya416@gmail.com&su=%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC%20%D8%AA%D8%A8%D8%A7%D8%B1%D9%83"
-            className="bg-[#0f8a5f] text-white p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            href="https://t.me/+201277772930"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#0088cc] text-white p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
           >
-            <span className="text-4xl block mb-3">📧</span>
-            <h4 className="font-bold text-lg mb-1">البريد الإلكتروني</h4>
-            <p className="text-white/80 text-sm">amrromya416@gmail.com</p>
+            <span className="text-4xl block mb-3">✈️</span>
+            <h4 className="font-bold text-lg mb-1">تليجرام</h4>
+            <p className="text-white/80 text-sm">تواصل معنا مباشرة</p>
           </a>
         </div>
       </div>
