@@ -362,10 +362,10 @@ function Trial() {
   const [showForm, setShowForm] = useState(false);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
-  const [form, setForm] = useState({ name: "", activity: "", email: "", address: "" });
+  const [form, setForm] = useState({ name: "", activity: "", phone: "", email: "", address: "" });
 
   const handleSubmit = async () => {
-    if (!form.name.trim() || !form.email.trim()) return;
+    if (!form.name.trim() || !form.phone.trim() || !form.email.trim()) return;
     setSending(true);
     try {
       const res = await fetch("/api/telegram", {
@@ -398,7 +398,7 @@ function Trial() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => { setShowForm(true); setSent(false); setForm({ name: "", activity: "", email: "", address: "" }); }}
+              onClick={() => { setShowForm(true); setSent(false); setForm({ name: "", activity: "", phone: "", email: "", address: "" }); }}
               className="bg-white text-[#0f8a5f] px-10 py-4 rounded-xl font-extrabold text-lg hover:bg-emerald-50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 inline-flex items-center gap-2 cursor-pointer"
             >
               <span>⬇</span>
@@ -443,6 +443,10 @@ function Trial() {
                     </select>
                   </div>
                   <div>
+                    <label className="block text-sm font-bold text-[#374151] mb-1">رقم الهاتف <span className="text-red-500">*</span></label>
+                    <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm" placeholder="01XXXXXXXXX" dir="ltr" />
+                  </div>
+                  <div>
                     <label className="block text-sm font-bold text-[#374151] mb-1">البريد الإلكتروني <span className="text-red-500">*</span></label>
                     <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm" placeholder="example@email.com" dir="ltr" />
                   </div>
@@ -452,7 +456,7 @@ function Trial() {
                   </div>
                 </div>
                 <div className="flex gap-3 mt-6">
-                  <button onClick={handleSubmit} disabled={sending || !form.name.trim() || !form.email.trim()} className="flex-1 bg-[#0f8a5f] text-white py-3 rounded-xl font-bold hover:bg-[#0b6e4b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  <button onClick={handleSubmit} disabled={sending || !form.name.trim() || !form.phone.trim() || !form.email.trim()} className="flex-1 bg-[#0f8a5f] text-white py-3 rounded-xl font-bold hover:bg-[#0b6e4b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                     {sending ? "جاري الإرسال..." : "تحميل الآن"}
                   </button>
                   <button onClick={() => setShowForm(false)} className="px-6 py-3 rounded-xl font-bold text-[#6b7280] border-2 border-gray-200 hover:bg-gray-50 transition-colors">إلغاء</button>
