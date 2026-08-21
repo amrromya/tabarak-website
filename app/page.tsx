@@ -416,7 +416,7 @@ function Contact() {
             <p className="text-white/80 text-sm">تواصل معنا مباشرة</p>
           </a>
           <a
-            href="mailto:amrromya416@gmail.com?subject=%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC%20%D8%AA%D8%A8%D8%A7%D8%B1%D9%83"
+            href="https://mail.google.com/mail/?view=fs&to=amrromya416@gmail.com&su=%D8%A7%D8%B3%D8%AA%D9%81%D8%B3%D8%A7%D8%B1%20%D8%B9%D9%86%20%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC%20%D8%AA%D8%A8%D8%A7%D8%B1%D9%83"
             className="bg-[#0f8a5f] text-white p-6 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
           >
             <span className="text-4xl block mb-3">📧</span>
