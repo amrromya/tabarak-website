@@ -375,7 +375,7 @@ function Trial() {
       });
       if (res.ok) {
         setSent(true);
-        window.open("https://github.com/amrromya/TABARAK/releases/download/v0.2.7/tabarak_0.2.7_x64-setup.exe", "_blank");
+        window.location.href = "https://github.com/amrromya/TABARAK/releases/download/v0.2.7/_0.2.7_x64-setup.exe";
       }
     } catch {}
     setSending(false);
