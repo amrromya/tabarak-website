@@ -126,7 +126,6 @@ function Screenshots() {
     { src: "/screenshots/inventory.png", title: "المخزون والمنتجات" },
     { src: "/screenshots/customers.png", title: "العملاء والديون" },
     { src: "/screenshots/reports.png", title: "التقارير" },
-    { src: "/screenshots/maintenance.png", title: "الصيانة" },
     { src: "/screenshots/login.png", title: "شاشة الدخول" },
   ];
 
@@ -220,10 +219,27 @@ function Screenshots() {
 
 function Pricing() {
   const [showModal, setShowModal] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", phone: "", email: "" });
+
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!form.name.trim()) e.name = "الاسم مطلوب";
+    else if (/\d/.test(form.name)) e.name = "الاسم يجب أن يكون حروف فقط";
+    if (!form.phone.trim()) e.phone = "رقم الهاتف مطلوب";
+    else if (!/^\d{11}$/.test(form.phone.trim())) e.phone = "رقم الهاتف يجب أن يكون 11 رقم";
+    if (!form.email.trim()) e.email = "البريد الإلكتروني مطلوب";
+    else if (!form.email.includes("@")) e.email = "البريد الإلكتروني غير صحيح";
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const inputClass = (field: string) =>
+    `w-full px-4 py-3 rounded-xl border-2 ${errors[field] ? "border-red-400 bg-red-50" : "border-gray-200"} focus:border-[#0f8a5f] outline-none text-sm`;
 
   const plans = [
     {
@@ -345,7 +361,7 @@ function Pricing() {
                   ))}
                 </ul>
                 <button
-                  onClick={() => { setSelectedPlan(plan.name + " - " + plan.price + " " + plan.unit); setShowModal(true); setSent(false); setForm({ name: "", phone: "", email: "" }); }}
+                  onClick={() => { setSelectedPlan(plan.name + " - " + plan.price + " " + plan.unit); setShowModal(true); setSent(false); setErrors({}); setForm({ name: "", phone: "", email: "" }); }}
                   className={`block text-center w-full ${plan.badgeColor} text-white py-3 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity cursor-pointer`}
                 >
                   اشتراك الآن
@@ -375,41 +391,73 @@ function Pricing() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-bold text-[#374151] mb-1">الاسم <span className="text-red-500">*</span></label>
-                    <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm" placeholder="الاسم الكامل" />
+                    <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputClass("name")} placeholder="الاسم الكامل (حروف فقط)" />
+                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-[#374151] mb-1">رقم الهاتف <span className="text-red-500">*</span></label>
-                    <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm" placeholder="01XXXXXXXXX" dir="ltr" />
+                    <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, "").slice(0, 11) })} className={inputClass("phone")} placeholder="01XXXXXXXXX" dir="ltr" />
+                    {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-[#374151] mb-1">البريد الإلكتروني <span className="text-red-500">*</span></label>
-                    <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm" placeholder="example@email.com" dir="ltr" />
+                    <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputClass("email")} placeholder="example@email.com" dir="ltr" />
+                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                   </div>
                 </div>
                 <div className="flex gap-3 mt-6">
                   <button
-                    onClick={async () => {
-                      if (!form.name.trim() || !form.phone.trim() || !form.email.trim()) return;
-                      setSending(true);
-                      try {
-                        await fetch("/api/telegram", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ name: form.name, phone: form.phone, email: form.email, activity: selectedPlan, address: "" }),
-                        });
-                      } catch {}
-                      setSending(false);
-                      setSent(true);
-                    }}
-                    disabled={sending || !form.name.trim() || !form.phone.trim() || !form.email.trim()}
+                    onClick={() => { if (!validate()) return; setShowConfirm(true); }}
+                    disabled={sending}
                     className="flex-1 bg-[#0f8a5f] text-white py-3 rounded-xl font-bold hover:bg-[#0b6e4b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {sending ? "جاري الإرسال..." : "تأكيد الاشتراك"}
+                    تأكيد الاشتراك
                   </button>
                   <button onClick={() => setShowModal(false)} className="px-6 py-3 rounded-xl font-bold text-[#6b7280] border-2 border-gray-200 hover:bg-gray-50 transition-colors">إلغاء</button>
                 </div>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {showConfirm && (
+        <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowConfirm(false)}>
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center" onClick={(e) => e.stopPropagation()}>
+            <span className="text-5xl block mb-4">⚠️</span>
+            <h3 className="text-xl font-extrabold text-[#12231f] mb-3">تأكيد البيانات</h3>
+            <p className="text-[#6b7280] text-sm mb-6">برجاء التأكد من أن البيانات المكتوبة صحيحة للتواصل معك وتثبيت الخطة بشكل سليم</p>
+            <div className="bg-gray-50 rounded-xl p-4 mb-6 text-right text-sm space-y-1">
+              <p><span className="font-bold">الاسم:</span> {form.name}</p>
+              <p><span className="font-bold">الهاتف:</span> {form.phone}</p>
+              <p><span className="font-bold">البريد:</span> {form.email}</p>
+              <p><span className="font-bold">الخطة:</span> {selectedPlan}</p>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={async () => {
+                setShowConfirm(false);
+                setSending(true);
+                let locationText = "";
+                try {
+                  const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+                  });
+                  locationText = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                } catch { locationText = "غير محدد"; }
+                try {
+                  await fetch("/api/telegram", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: form.name, phone: form.phone, email: form.email, activity: selectedPlan, address: "", location: locationText }),
+                  });
+                } catch {}
+                setSending(false);
+                setSent(true);
+              }} disabled={sending} className="flex-1 bg-[#0f8a5f] text-white py-3 rounded-xl font-bold hover:bg-[#0b6e4b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                {sending ? "جاري الإرسال..." : "تأكيد وإرسال"}
+              </button>
+              <button onClick={() => setShowConfirm(false)} className="px-6 py-3 rounded-xl font-bold text-[#6b7280] border-2 border-gray-200 hover:bg-gray-50 transition-colors">تعديل</button>
+            </div>
           </div>
         </div>
       )}
@@ -419,59 +467,76 @@ function Pricing() {
 
 function Trial() {
   const [showForm, setShowForm] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", activity: "", phone: "", email: "", address: "" });
 
-  const handleSubmit = async () => {
-    if (!form.name.trim() || !form.phone.trim() || !form.email.trim()) return;
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!form.name.trim()) e.name = "الاسم مطلوب";
+    else if (/\d/.test(form.name)) e.name = "الاسم يجب أن يكون حروف فقط";
+    if (!form.phone.trim()) e.phone = "رقم الهاتف مطلوب";
+    else if (!/^\d{11}$/.test(form.phone.trim())) e.phone = "رقم الهاتف يجب أن يكون 11 رقم";
+    if (!form.email.trim()) e.email = "البريد الإلكتروني مطلوب";
+    else if (!form.email.includes("@")) e.email = "البريد الإلكتروني غير صحيح";
+    if (!form.address.trim()) e.address = "العنوان مطلوب";
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const handleSubmit = () => {
+    if (!validate()) return;
+    setShowConfirm(true);
+  };
+
+  const confirmSubmit = async () => {
+    setShowConfirm(false);
     setSending(true);
+    let locationText = "";
     try {
-      const res = await fetch("/api/telegram", {
+      const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+      });
+      locationText = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+    } catch {
+      locationText = "غير محدد";
+    }
+    try {
+      await fetch("/api/telegram", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, location: locationText }),
       });
-      if (res.ok) {
-        setSent(true);
-        const a = document.createElement("a");
-        a.href = "https://github.com/amrromya/TABARAK/releases/download/v0.3.5/_0.3.5_x64-setup.exe";
-        a.download = "tabarak_0.3.5_x64-setup.exe";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      }
+      setSent(true);
+      const a = document.createElement("a");
+      a.href = "https://github.com/amrromya/TABARAK/releases/download/v0.3.5/_0.3.5_x64-setup.exe";
+      a.download = "tabarak_0.3.5_x64-setup.exe";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     } catch {}
     setSending(false);
   };
 
+  const inputClass = (field: string) =>
+    `w-full px-4 py-3 rounded-xl border-2 ${errors[field] ? "border-red-400 bg-red-50" : "border-gray-200"} focus:border-[#0f8a5f] outline-none text-sm`;
+
   return (
-    <section
-      id="trial"
-      className="py-20 px-4 bg-gradient-to-bl from-[#0f8a5f] to-[#12231f]"
-    >
+    <section id="trial" className="py-20 px-4 bg-gradient-to-bl from-[#0f8a5f] to-[#12231f]">
       <div className="max-w-4xl mx-auto text-center">
         <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-10 border border-white/20">
           <span className="text-5xl mb-6 block">📦</span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
-            نسخة تجريبية مجانية
-          </h2>
-          <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto">
-            جرّب البرنامج لمدة 14 يوم مجاناً بدون بطاقة ائتمان. جميع المميزات
-            متاحة في النسخة التجريبية.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => { setShowForm(true); setSent(false); setForm({ name: "", activity: "", phone: "", email: "", address: "" }); }}
-              className="bg-white text-[#0f8a5f] px-10 py-4 rounded-xl font-extrabold text-lg hover:bg-emerald-50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 inline-flex items-center gap-2 cursor-pointer"
-            >
-              <span>⬇</span>
-              تحميل النسخة التجريبية
-            </button>
-          </div>
-          <p className="text-white/50 text-sm mt-6">
-            يعمل على Windows 10/11 — حجم التحميل 25 MB تقريباً
-          </p>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">نسخة تجريبية مجانية</h2>
+          <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto">جرّب البرنامج لمدة 14 يوم مجاناً بدون بطاقة ائتمان. جميع المميزات متاحة في النسخة التجريبية.</p>
+          <button
+            onClick={() => { setShowForm(true); setSent(false); setErrors({}); setForm({ name: "", activity: "", phone: "", email: "", address: "" }); }}
+            className="bg-white text-[#0f8a5f] px-10 py-4 rounded-xl font-extrabold text-lg hover:bg-emerald-50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 inline-flex items-center gap-2 cursor-pointer"
+          >
+            <span>⬇</span> تحميل النسخة التجريبية
+          </button>
+          <p className="text-white/50 text-sm mt-6">يعمل على Windows 10/11 — حجم التحميل 25 MB تقريباً</p>
         </div>
       </div>
 
@@ -488,11 +553,12 @@ function Trial() {
             ) : (
               <>
                 <h3 className="text-xl font-extrabold text-[#12231f] mb-1">تحميل النسخة التجريبية</h3>
-                <p className="text-[#6b7280] text-sm mb-6">املأ البياناتournée للحصول على رابط التحميل</p>
+                <p className="text-[#6b7280] text-sm mb-6">املأ البيانات للحصول على رابط التحميل</p>
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-bold text-[#374151] mb-1">الاسم <span className="text-red-500">*</span></label>
-                    <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm" placeholder="الاسم الكامل" />
+                    <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputClass("name")} placeholder="الاسم الكامل (حروف فقط)" />
+                    {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-[#374151] mb-1">نوع النشاط</label>
@@ -508,25 +574,49 @@ function Trial() {
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-[#374151] mb-1">رقم الهاتف <span className="text-red-500">*</span></label>
-                    <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm" placeholder="01XXXXXXXXX" dir="ltr" />
+                    <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, "").slice(0, 11) })} className={inputClass("phone")} placeholder="01XXXXXXXXX" dir="ltr" />
+                    {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-[#374151] mb-1">البريد الإلكتروني <span className="text-red-500">*</span></label>
-                    <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm" placeholder="example@email.com" dir="ltr" />
+                    <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputClass("email")} placeholder="example@email.com" dir="ltr" />
+                    {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-[#374151] mb-1">العنوان</label>
-                    <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#0f8a5f] outline-none text-sm" placeholder="المدينة / المنطقة" />
+                    <label className="block text-sm font-bold text-[#374151] mb-1">العنوان <span className="text-red-500">*</span></label>
+                    <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className={inputClass("address")} placeholder="المدينة / المنطقة" />
+                    {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
                   </div>
                 </div>
                 <div className="flex gap-3 mt-6">
-                  <button onClick={handleSubmit} disabled={sending || !form.name.trim() || !form.phone.trim() || !form.email.trim()} className="flex-1 bg-[#0f8a5f] text-white py-3 rounded-xl font-bold hover:bg-[#0b6e4b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  <button onClick={handleSubmit} disabled={sending} className="flex-1 bg-[#0f8a5f] text-white py-3 rounded-xl font-bold hover:bg-[#0b6e4b] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                     {sending ? "جاري الإرسال..." : "تحميل الآن"}
                   </button>
                   <button onClick={() => setShowForm(false)} className="px-6 py-3 rounded-xl font-bold text-[#6b7280] border-2 border-gray-200 hover:bg-gray-50 transition-colors">إلغاء</button>
                 </div>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {showConfirm && (
+        <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowConfirm(false)}>
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center" onClick={(e) => e.stopPropagation()}>
+            <span className="text-5xl block mb-4">⚠️</span>
+            <h3 className="text-xl font-extrabold text-[#12231f] mb-3">تأكيد البيانات</h3>
+            <p className="text-[#6b7280] text-sm mb-6">برجاء التأكد من أن البيانات المكتوبة صحيحة لاتمام عملية التحميل والتواصل معك بشكل سليم</p>
+            <div className="bg-gray-50 rounded-xl p-4 mb-6 text-right text-sm space-y-1">
+              <p><span className="font-bold">الاسم:</span> {form.name}</p>
+              <p><span className="font-bold">الهاتف:</span> {form.phone}</p>
+              <p><span className="font-bold">البريد:</span> {form.email}</p>
+              {form.activity && <p><span className="font-bold">نوع النشاط:</span> {form.activity}</p>}
+              <p><span className="font-bold">العنوان:</span> {form.address}</p>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={confirmSubmit} className="flex-1 bg-[#0f8a5f] text-white py-3 rounded-xl font-bold hover:bg-[#0b6e4b] transition-colors">تأكيد وتحميل</button>
+              <button onClick={() => setShowConfirm(false)} className="px-6 py-3 rounded-xl font-bold text-[#6b7280] border-2 border-gray-200 hover:bg-gray-50 transition-colors">تعديل</button>
+            </div>
           </div>
         </div>
       )}

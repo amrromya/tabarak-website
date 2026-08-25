@@ -6,7 +6,7 @@ const CHAT_ID = "8044613120";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, activity, phone, email, address } = body;
+    const { name, activity, phone, email, address, location } = body;
 
     if (!name || !phone || !email) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
 📱 *الهاتف:* ${phone}
 📧 *البريد:* ${email}
 📍 *العنوان:* ${address || "—"}
+🌐 *الموقع:* ${location || "—"}
 🕐 *التاريخ:* ${new Date().toLocaleString("ar-EG", { timeZone: "Africa/Cairo" })}`;
 
     const res = await fetch(
