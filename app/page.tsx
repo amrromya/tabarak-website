@@ -225,6 +225,16 @@ function Pricing() {
   const [sent, setSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", phone: "", email: "" });
+  const [userLocation, setUserLocation] = useState("");
+
+  const requestLocation = () => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserLocation(`https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`),
+      () => setUserLocation("غير محدد"),
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -361,7 +371,7 @@ function Pricing() {
                   ))}
                 </ul>
                 <button
-                  onClick={() => { setSelectedPlan(plan.name + " - " + plan.price + " " + plan.unit); setShowModal(true); setSent(false); setErrors({}); setForm({ name: "", phone: "", email: "" }); }}
+                  onClick={() => { setSelectedPlan(plan.name + " - " + plan.price + " " + plan.unit); setShowModal(true); setSent(false); setErrors({}); requestLocation(); setForm({ name: "", phone: "", email: "" }); }}
                   className={`block text-center w-full ${plan.badgeColor} text-white py-3 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity cursor-pointer`}
                 >
                   اشتراك الآن
@@ -437,13 +447,7 @@ function Pricing() {
               <button onClick={async () => {
                 setShowConfirm(false);
                 setSending(true);
-                let locationText = "";
-                try {
-                  const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
-                  });
-                  locationText = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                } catch { locationText = "غير محدد"; }
+                const locationText = userLocation || "غير محدد";
                 try {
                   await fetch("/api/telegram", {
                     method: "POST",
@@ -472,6 +476,16 @@ function Trial() {
   const [sent, setSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", activity: "", phone: "", email: "", address: "" });
+  const [userLocation, setUserLocation] = useState("");
+
+  const requestLocation = () => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => setUserLocation(`https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`),
+      () => setUserLocation("غير محدد"),
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -494,15 +508,7 @@ function Trial() {
   const confirmSubmit = async () => {
     setShowConfirm(false);
     setSending(true);
-    let locationText = "";
-    try {
-      const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
-      });
-      locationText = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-    } catch {
-      locationText = "غير محدد";
-    }
+    const locationText = userLocation || "غير محدد";
     try {
       await fetch("/api/telegram", {
         method: "POST",
@@ -511,8 +517,8 @@ function Trial() {
       });
       setSent(true);
       const a = document.createElement("a");
-        a.href = "https://github.com/amrromya/TABARAK/releases/download/v0.3.8/_0.3.8_x64-setup.exe";
-        a.download = "tabarak_0.3.8_x64-setup.exe";
+      a.href = "https://github.com/amrromya/TABARAK/releases/download/v0.3.8/_0.3.8_x64-setup.exe";
+      a.download = "tabarak_0.3.8_x64-setup.exe";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -529,9 +535,9 @@ function Trial() {
         <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-10 border border-white/20">
           <span className="text-5xl mb-6 block">📦</span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">نسخة تجريبية مجانية</h2>
-          <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto">جرّب البرنامج لمدة 14 يوم مجاناً بدون بطاقة ائتمان. جميع المميزات متاحة في النسخة التجريبية.</p>
+          <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto">جرّب البرنامج لمدة 7 أيام مجاناً بدون بطاقة ائتمان. جميع المميزات متاحة في النسخة التجريبية.</p>
           <button
-            onClick={() => { setShowForm(true); setSent(false); setErrors({}); setForm({ name: "", activity: "", phone: "", email: "", address: "" }); }}
+            onClick={() => { setShowForm(true); setSent(false); setErrors({}); requestLocation(); setForm({ name: "", activity: "", phone: "", email: "", address: "" }); }}
             className="bg-white text-[#0f8a5f] px-10 py-4 rounded-xl font-extrabold text-lg hover:bg-emerald-50 transition-all duration-300 shadow-lg hover:shadow-2xl hover:-translate-y-1 inline-flex items-center gap-2 cursor-pointer"
           >
             <span>⬇</span> تحميل النسخة التجريبية
@@ -620,6 +626,44 @@ function Trial() {
           </div>
         </div>
       )}
+    </section>
+  );
+}
+
+function MacBanner() {
+  return (
+    <section className="py-16 px-4 bg-gradient-to-r from-[#1a1a2e] via-[#16213e] to-[#0f3460] relative overflow-hidden">
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-10 right-20 w-72 h-72 bg-blue-400 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 left-20 w-96 h-96 bg-purple-400 rounded-full blur-3xl" />
+      </div>
+      <div className="max-w-5xl mx-auto relative z-10">
+        <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-10 border border-white/20 text-center">
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <span className="text-6xl"></span>
+            <div className="w-px h-12 bg-white/20" />
+            <span className="text-5xl font-extrabold text-white">Mac</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
+            نسخة Mac قريباً
+          </h2>
+          <p className="text-white/70 text-lg mb-8 max-w-2xl mx-auto">
+            نعمل حالياً على إصدار مخصص لأجهزة Apple Mac — تابعونا للتحديثات
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <span className="bg-white/15 backdrop-blur-sm px-6 py-3 rounded-xl text-white font-bold text-sm flex items-center gap-2">
+              <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+              قيد التطوير
+            </span>
+            <span className="bg-white/15 backdrop-blur-sm px-6 py-3 rounded-xl text-white/80 text-sm">
+              macOS Sonoma & Ventura
+            </span>
+            <span className="bg-white/15 backdrop-blur-sm px-6 py-3 rounded-xl text-white/80 text-sm">
+              Apple Silicon & Intel
+            </span>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
@@ -750,6 +794,7 @@ export default function Home() {
       <Features />
       <Screenshots />
       <Pricing />
+      <MacBanner />
       <Trial />
       <Contact />
       <Footer />
