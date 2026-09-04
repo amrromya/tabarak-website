@@ -13,7 +13,7 @@ function Hero() {
         <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2 mb-8 border border-white/20">
           <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
           <span className="text-white/90 text-sm font-semibold">
-            الإصدار الأخير v0.5.0
+            الإصدار الأخير v0.6.0
           </span>
         </div>
         <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
@@ -519,8 +519,8 @@ function Trial() {
       });
       setSent(true);
       const a = document.createElement("a");
-      a.href = "https://github.com/amrromya/TABARAK/releases/download/v0.5.0/_0.5.0_x64-setup.exe";
-      a.download = "tabarak_0.5.0_x64-setup.exe";
+      a.href = "https://github.com/amrromya/TABARAK/releases/download/v0.6.0/_0.6.0_x64-setup.exe";
+      a.download = "tabarak_0.6.0_x64-setup.exe";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
